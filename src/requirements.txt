@@ -1,0 +1,229 @@
+# 🚀 Objective
+Create a modern and responsive **Employee Management System (Angular 17)**
+using **Feature-Based + Atomic Design Architecture** with clean modular structure.
+
+---
+
+## 🧱 Project Folder Structure
+
+```
+src/
+├── app/
+│   ├── core/
+│   │   ├── interceptors/
+│   │   ├── guards/
+│   │   ├── services/
+│   │   ├── models/
+│   │   ├── constants/
+│   │   ├── utils/
+│   │   └── core.module.ts
+│   │
+│   ├── shared/
+│   │   ├── components/
+│   │   │   ├── atoms/
+│   │   │   ├── molecules/
+│   │   │   ├── organisms/
+│   │   │   └── templates/
+│   │   ├── pipes/
+│   │   ├── directives/
+│   │   ├── services/
+│   │   └── shared.module.ts
+│   │
+│   ├── features/
+│   │   ├── auth/
+│   │   │   ├── apis/
+│   │   │   │   └── auth.api.ts
+│   │   │   ├── services/
+│   │   │   │   └── auth.service.ts
+│   │   │   ├── constants/
+│   │   │   │   └── auth.constants.ts
+│   │   │   ├── components/
+│   │   │   │   ├── atoms/
+│   │   │   │   ├── molecules/
+│   │   │   │   ├── organisms/
+│   │   │   │   └── templates/
+│   │   │   ├── pages/
+│   │   │   │   └── login/
+│   │   │   │       ├── login.component.html
+│   │   │   │       ├── login.component.ts
+│   │   │   │       └── login.component.scss
+│   │   │   ├── models/
+│   │   │   │   └── user.model.ts
+│   │   │   └── auth.module.ts
+│   │   │
+│   │   ├── employees/
+│   │   │   ├── apis/
+│   │   │   │   └── employees.api.ts
+│   │   │   ├── services/
+│   │   │   │   └── employees.service.ts
+│   │   │   ├── constants/
+│   │   │   │   └── employees.constants.ts
+│   │   │   ├── components/
+│   │   │   │   ├── atoms/
+│   │   │   │   │   ├── button/
+│   │   │   │   │   │   └── button.component.ts
+│   │   │   │   │   ├── input/
+│   │   │   │   │   │   └── input.component.ts
+│   │   │   │   │   └── status-badge/
+│   │   │   │   │       └── status-badge.component.ts
+│   │   │   │   ├── molecules/
+│   │   │   │   │   └── employee-info-row/
+│   │   │   │   │       └── employee-info-row.component.ts
+│   │   │   │   ├── organisms/
+│   │   │   │   │   ├── employee-card/
+│   │   │   │   │   │   └── employee-card.component.ts
+│   │   │   │   │   ├── employee-form/
+│   │   │   │   │   │   └── employee-form.component.ts
+│   │   │   │   │   └── confirm-dialog/
+│   │   │   │   │       └── confirm-dialog.component.ts
+│   │   │   │   └── templates/
+│   │   │   │       └── employee-grid/
+│   │   │   │           └── employee-grid.component.ts
+│   │   │   ├── pages/
+│   │   │   │   ├── employee-list/
+│   │   │   │   │   ├── employee-list.component.html
+│   │   │   │   │   ├── employee-list.component.ts
+│   │   │   │   │   └── employee-list.component.scss
+│   │   │   │   └── employee-detail/
+│   │   │   │       └── employee-detail.component.ts
+│   │   │   ├── models/
+│   │   │   │   └── employee.model.ts
+│   │   │   └── employees.module.ts
+│   │
+│   ├── layouts/
+│   │   ├── main-layout/
+│   │   │   ├── main-layout.component.html
+│   │   │   └── main-layout.component.ts
+│   │   ├── auth-layout/
+│   │   │   └── auth-layout.component.ts
+│   │   └── layout.module.ts
+│   │
+│   ├── app-routing.module.ts
+│   └── app.module.ts
+│
+└── assets/
+    ├── images/
+    └── styles/
+        ├── tailwind.css
+        └── theme.scss
+```
+
+---
+
+## 🧠 Technical Requirements
+
+- Framework: **Angular 17**
+- Styling: **TailwindCSS** or **Angular Material**
+- Forms: **Reactive Forms**
+- Data: Local JSON or API
+- State Management: RxJS BehaviorSubject
+- Smart Search: `debounceTime`, `combineLatest`, `filter`
+- CRUD Actions: Add, Edit, Delete (real-time updates)
+- Multi-session support via `sessionStorage`
+
+---
+
+## ⚙️ Functional Features
+
+### 👤 Login Page
+- Use `AuthService` to call:
+  ```
+  https://erpapi.nc.sa/erp/Erp_Users/erp_login?email=noureladawy418@gmail.com&password=123@123&lang=ar
+  ```
+- Store `companyId` in `sessionStorage`.
+
+---
+
+### 👥 Employees Page
+- Fetch employees by companyId:
+  ```
+  https://erpapi.nc.sa/erp/Mangement/get_all_erp_employees_by_company_id?company_id={companyId}
+  ```
+- Display employees in responsive grid.
+- Search across all fields (name, department, hire date, status).
+- Filter by status (All, Active, Suspended).
+- Add/Edit/Delete employees dynamically without reload.
+- Edit opens modal with prefilled form.
+- Delete shows confirmation dialog.
+
+---
+
+## 🧩 RxJS Search Example
+
+```ts
+combineLatest([
+  this.employeeService.employees$,
+  this.searchControl.valueChanges.pipe(startWith(''), debounceTime(300)),
+  this.statusFilter.valueChanges.pipe(startWith('All'))
+])
+.pipe(
+  map(([employees, search, status]) => employees.filter(emp => {
+    const matchSearch = Object.values(emp).some(v =>
+      v.toString().toLowerCase().includes(search.toLowerCase())
+    );
+    const matchStatus = status === 'All' || emp.status === status;
+    return matchSearch && matchStatus;
+  }))
+)
+.subscribe(filtered => this.filteredEmployees = filtered);
+```
+
+---
+
+## 🧩 Employee Model Example
+```ts
+export interface Employee {
+  id: number;
+  fullName: string;
+  department: string;
+  hireDate: string;
+  status: 'Active' | 'Suspended';
+}
+```
+
+---
+
+## 🧩 Employee Service Example
+```ts
+@Injectable({ providedIn: 'root' })
+export class EmployeesService {
+  private employees$ = new BehaviorSubject<Employee[]>([]);
+
+  constructor(private http: HttpClient) {}
+
+  loadEmployees(companyId: string) {
+    return this.http.get<Employee[]>(EMPLOYEES_API.GET_ALL(companyId))
+      .pipe(tap(data => this.employees$.next(data)));
+  }
+
+  addEmployee(emp: Employee) {
+    this.employees$.next([...this.employees$.value, emp]);
+  }
+
+  updateEmployee(updated: Employee) {
+    const employees = this.employees$.value.map(e => e.id === updated.id ? updated : e);
+    this.employees$.next(employees);
+  }
+
+  deleteEmployee(id: number) {
+    this.employees$.next(this.employees$.value.filter(e => e.id !== id));
+  }
+
+  get employeesObservable() {
+    return this.employees$.asObservable();
+  }
+}
+```
+
+---
+
+## ✅ Expected Deliverables
+- Angular 17 project ready to run
+- Modular and reusable architecture
+- Atomic components (atoms → molecules → organisms → templates)
+- Functional login, smart search, filter, add, edit, delete
+- Fully responsive UI with clean design
+
+---
+
+# 🧩 Generate this project using the above folder structure and architecture principles.

@@ -1,0 +1,110 @@
+<div class="flex items-center justify-between gap-4 mb-4">
+  <div class="w-full">
+    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Search</label>
+    <input
+      type="text"
+      [formControl]="searchControl"
+      placeholder="Type to search..."
+      class="block w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+    />
+  </div>
+
+  <div class="flex items-end gap-2">
+    <div>
+      <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Page size</label>
+      <select
+        [formControl]="pageSizeControl"
+        class="rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+      >
+        <option *ngFor="let s of pageSizeOptions" [ngValue]="s" class="bg-white dark:bg-slate-900">{{ s }}</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="overflow-x-auto w-full">
+  <div class="rounded-2xl shadow-sm ring-1 ring-black/5 dark:ring-white/10 bg-white dark:bg-slate-900">
+    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+      <thead class="bg-slate-100 dark:bg-slate-700 sticky top-0 z-10">
+        <tr>
+          <th
+            *ngFor="let col of displayedColumns"
+            (click)="sortBy(col)"
+            class="px-4 py-3 text-left text-xs font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider select-none cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+          >
+            <div class="flex items-center gap-1">
+              <span>{{ col === '__actions' ? 'Actions' : col }}</span>
+              <span *ngIf="sortKey === col" class="text-slate-500 dark:text-slate-300 text-xs">
+                {{ sortDir === 'asc' ? '▲' : '▼' }}
+              </span>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+        <tr
+          *ngFor="let row of filteredSortedPaged"
+          class="even:bg-slate-50 dark:even:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition"
+        >
+          <td *ngFor="let col of displayedColumns" class="px-4 py-2 text-sm text-slate-900 dark:text-white align-middle">
+            <ng-container *ngIf="col !== '__actions'; else actionsTpl">
+              {{ row[col] }}
+            </ng-container>
+            <ng-template #actionsTpl>
+              <div class="flex items-center gap-2">
+                <button
+                  (click)="onEdit(row)"
+                  class="inline-flex items-center rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1.5 text-xs font-medium transition focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  Edit
+                </button>
+                <button
+                  (click)="onDelete(row)"
+                  class="inline-flex items-center rounded-lg bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1.5 text-xs font-medium transition focus:outline-none focus:ring-2 focus:ring-rose-500"
+                >
+                  Delete
+                </button>
+              </div>
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="flex items-center justify-between mt-4">
+  <div class="text-sm text-slate-600 dark:text-slate-300">
+    Page {{ currentPage + 1 }} of {{ totalPages() }} — Total: {{ totalCount() }}
+  </div>
+  <div class="flex items-center gap-2">
+    <button
+      (click)="goPrev()"
+      class="rounded-full border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition disabled:opacity-50"
+      [disabled]="currentPage === 0"
+    >
+      Prev
+    </button>
+
+    <ng-container *ngFor="let p of pageNumbers">
+      <span *ngIf="p === 'ellipsis-start' || p === 'ellipsis-end'" class="px-2 text-sm text-slate-500 dark:text-slate-400">...</span>
+      <button
+        *ngIf="p !== 'ellipsis-start' && p !== 'ellipsis-end'"
+        (click)="goTo(+p - 1)"
+        class="rounded-full border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+        [class.bg-slate-200]="+p - 1 === currentPage"
+        [class.dark:bg-slate-600]="+p - 1 === currentPage"
+      >
+        {{ p }}
+      </button>
+    </ng-container>
+
+    <button
+      (click)="goNext()"
+      class="rounded-full border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition disabled:opacity-50"
+      [disabled]="currentPage + 1 >= totalPages()"
+    >
+      Next
+    </button>
+  </div>
+</div>

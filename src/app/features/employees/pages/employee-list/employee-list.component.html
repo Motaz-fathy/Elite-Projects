@@ -1,0 +1,16 @@
+
+
+<div class=" w-2/3 mx-auto flex flex-col bg-white dark:bg-slate-900">
+
+  <!-- heading of employee list -->
+  <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-50 mb-4">Employee List</h2>
+
+
+  <!-- Data Table -->
+  <app-advanced-data-table
+    [data]="($any(employees$ | async)) ?? []"
+    [displayActions]="true"
+    (edit)="editEmployee($any($event))"
+    (delete)="deleteEmployee($any($event))"
+  ></app-advanced-data-table>
+</div>

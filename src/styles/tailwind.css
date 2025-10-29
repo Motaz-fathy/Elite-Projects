@@ -1,0 +1,6 @@
+/* stylelint-disable at-rule-empty-line-before */
+/* stylelint-disable at-rule-allowed-list */
+/* stylelint-disable scss/at-rule-no-unknown */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

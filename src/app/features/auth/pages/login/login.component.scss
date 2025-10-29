@@ -1,0 +1,19 @@
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.full {
+  width: 100%;
+}
+
+.error {
+  margin-top: 12px;
+  color: #c62828;
+}

@@ -1,0 +1,27 @@
+<nav class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+  <div class="container mx-auto px-4">
+    <div class="h-14 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-lg font-bold text-slate-900 dark:text-white">{{ 'nav.logo' | t }}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          (click)="toggleTheme()"
+          class="inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-3 py-1.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+        >
+          {{ 'nav.theme' | t }}: {{ ('mode.' + currentTheme) | t }}
+        </button>
+
+        <button
+          type="button"
+          (click)="toggleLanguage()"
+          class="inline-flex items-center rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-3 py-1.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+        >
+          {{ 'nav.language' | t }}: {{ ('language.' + currentLang) | t }}
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
